@@ -46,12 +46,17 @@ const ProfileEditPage = () => {
   };
 
   const handleRandomAvatar = () => {
-    const idx = Math.floor(Math.random() * 100) + 1;
-    const randomAvatar = `https://avatar.iran.liara.run/public/${idx}.png`;
-    setFormState({ ...formState, profile: randomAvatar });
-    toast.success("Random Profile Picture Generated!");
-  };
+    const seed = crypto.randomUUID();
 
+    const randomAvatar = `https://api.dicebear.com/9.x/personas/svg?seed=${seed}`;
+
+    setFormState({
+      ...formState,
+      profile: randomAvatar,
+    });
+
+    toast.success("Profile-Pic Generation Successful");
+  };
   return (
     <div className='min-h-screen bg-base-100 flex items-center justify-center p-4'>
       <div className='card bg-base-200 w-full max-w-3xl shadow-xl'>
