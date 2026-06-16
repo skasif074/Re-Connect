@@ -1,29 +1,32 @@
-import { Link } from "react-router";
-import { LANGUAGE_TO_FLAG } from "../constants";
+//import { Link } from "react-router";
+// import { LANGUAGE_TO_FLAG } from "../constants"; // Commented out since flags are hidden
+
+import { Link } from "react-router-dom"; // Note: Changed to react-router-dom if using v6+
 
 const FriendCard = ({ friend }) => {
   return (
-    <div className="card bg-base-200 hover:shadow-md transition-shadow">
-      <div className="card-body p-4">
+    <div className="card relative overflow-hidden bg-black/40 backdrop-blur-xl border border-white/10 shadow-[0_0_15px_rgba(236,72,153,0.3)] hover:shadow-[0_0_30px_rgba(236,72,153,0.6)] transition-all duration-300 group">
+      
+      {/* Neon glowing ambient orbs in the background */}
+      <div className="absolute -z-10 w-24 h-24 bg-fuchsia-500/30 rounded-full blur-2xl -top-6 -left-6 group-hover:bg-fuchsia-500/50 transition-all duration-500"></div>
+      <div className="absolute -z-10 w-24 h-24 bg-purple-500/30 rounded-full blur-2xl -bottom-6 -right-6 group-hover:bg-purple-500/50 transition-all duration-500"></div>
+
+      <div className="card-body p-4 z-10 text-white">
         <div className="flex items-center gap-3 mb-3">
-          <div className="avatar size-12">
-            <img src={friend.profile} alt={friend.fullName} />
+          <div className="avatar size-12 ring ring-fuchsia-500/50 rounded-full shadow-[0_0_10px_rgba(236,72,153,0.5)]">
+            <img src={friend.profile} alt={friend.fullName} className="rounded-full" />
           </div>
-          <h3 className="font-semibold truncate">{friend.fullName}</h3>
+          <h3 className="font-semibold truncate text-lg tracking-wide drop-shadow-md">
+            {friend.fullName}
+          </h3>
         </div>
 
-        <div className="flex flex-wrap gap-1.5 mb-3">
-          <span className="badge badge-secondary text-xs">
-            {getLanguageFlag(friend.nativeLanguage)}
-            Native: {friend.nativeLanguage}
-          </span>
-          <span className="badge badge-outline text-xs">
-            {getLanguageFlag(friend.learningLanguage)}
-            Learning: {friend.learningLanguage}
-          </span>
-        </div>
+        {/* Language Section Completely Removed */}
 
-        <Link to={`/chat/${friend._id}`} className="btn btn-outline w-full">
+        <Link 
+          to={`/chat/${friend._id}`} 
+          className="btn btn-sm mt-2 border border-fuchsia-500/50 bg-transparent text-fuchsia-200 hover:bg-fuchsia-500 hover:text-white hover:border-fuchsia-400 hover:shadow-[0_0_15px_rgba(236,72,153,0.8)] transition-all duration-300 w-full"
+        >
           Message
         </Link>
       </div>
@@ -32,6 +35,7 @@ const FriendCard = ({ friend }) => {
 };
 export default FriendCard;
 
+/* // Commented out the flag helper function safely
 export function getLanguageFlag(language) {
   if (!language) return null;
 
@@ -49,3 +53,4 @@ export function getLanguageFlag(language) {
   }
   return null;
 }
+*/

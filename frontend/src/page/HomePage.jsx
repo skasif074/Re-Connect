@@ -8,7 +8,7 @@ import {
 } from "../lib/api.js";
 import { Link } from "react-router-dom";
 import { CheckCircleIcon, MapPinIcon, UserPlusIcon, UsersIcon } from "lucide-react";
-import FriendCard, { getLanguageFlag } from "../components/FriendCard.jsx";
+import FriendCard from "../components/FriendCard.jsx";
 import NoFriendsFound from "../components/NoFriendsFound.jsx";
 
 export const capitialize = (str) => str?.charAt(0).toUpperCase() + str?.slice(1);
@@ -62,6 +62,7 @@ const HomePage = () => {
   return (
     <div className="min-h-screen bg-base-100 p-4 sm:p-6 lg:p-8">
       <div className="container mx-auto space-y-10">
+        
         {/* Friends Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
@@ -81,7 +82,7 @@ const HomePage = () => {
         ) : friends.length === 0 ? (
           <NoFriendsFound />
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {friends.map((friend) => (
               <FriendCard key={friend._id} friend={friend} />
             ))}
@@ -104,7 +105,7 @@ const HomePage = () => {
               placeholder="Search users..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="input input-bordered w-full sm:w-64 mt-4 sm:mt-0"
+              className="input input-bordered w-full sm:w-64 mt-4 sm:mt-0 bg-base-200/50 backdrop-blur-sm"
             />
           </div>
 
@@ -118,7 +119,7 @@ const HomePage = () => {
               <p className="text-base-content opacity-70">Try a different search term</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-white">
               {filteredUsers.map((user) => {
                 const hasRequestBeenSent = outgoingRequestsIds.has(user._id);
                 const isUserLoading = loadingUserId === user._id;
@@ -126,17 +127,23 @@ const HomePage = () => {
                 return (
                   <div
                     key={user._id}
-                    className="card bg-base-100 hover:shadow-lg transition-all duration-300"
+                    className="card relative overflow-hidden bg-black/40 backdrop-blur-xl border border-white/10 shadow-[0_0_15px_rgba(56,189,248,0.2)] hover:shadow-[0_0_25px_rgba(56,189,248,0.5)] transition-all duration-300 group"
                   >
-                    <div className="card-body p-5 space-y-4">
+                    {/* Neon glowing ambient orbs */}
+                    <div className="absolute -z-10 w-32 h-32 bg-cyan-500/20 rounded-full blur-3xl -top-10 -right-10 group-hover:bg-cyan-500/40 transition-all duration-500"></div>
+                    <div className="absolute -z-10 w-32 h-32 bg-blue-500/20 rounded-full blur-3xl -bottom-10 -left-10 group-hover:bg-blue-500/40 transition-all duration-500"></div>
+
+                    <div className="card-body p-5 space-y-4 z-10">
                       <div className="flex items-center gap-3">
-                        <div className="avatar size-16 rounded-full">
-                          <img src={user.profile} alt={user.fullName} />
+                        <div className="avatar size-16 rounded-full ring ring-cyan-500/50 shadow-[0_0_15px_rgba(56,189,248,0.4)]">
+                          <img src={user.profile} alt={user.fullName} className="rounded-full" />
                         </div>
                         <div>
-                          <h3 className="font-semibold text-lg">{user.fullName}</h3>
+                          <h3 className="font-semibold text-lg tracking-wide drop-shadow-md">
+                            {user.fullName}
+                          </h3>
                           {user.location && (
-                            <div className="flex items-center text-xs opacity-70 mt-1">
+                            <div className="flex items-center text-xs text-cyan-200/80 mt-1">
                               <MapPinIcon className="size-3 mr-1" />
                               {user.location}
                             </div>
@@ -144,22 +151,15 @@ const HomePage = () => {
                         </div>
                       </div>
 
-                      <div className="flex flex-wrap gap-1.5">
-                        <span className="badge badge-secondary">
-                          {getLanguageFlag(user.nativeLanguage)}
-                          Native: {capitialize(user.nativeLanguage)}
-                        </span>
-                        <span className="badge badge-outline">
-                          {getLanguageFlag(user.learningLanguage)}
-                          Learning: {capitialize(user.learningLanguage)}
-                        </span>
-                      </div>
+                      {/* Language Section Completely Removed */}
 
-                      {user.bio && <p className="text-sm opacity-70">{user.bio}</p>}
+                      {user.bio && <p className="text-sm text-gray-300">{user.bio}</p>}
 
                       <button
-                        className={`btn w-full mt-2 ${
-                          hasRequestBeenSent || isUserLoading ? "btn-disabled" : "btn-primary"
+                        className={`btn w-full mt-2 border-none transition-all duration-300 ${
+                          hasRequestBeenSent || isUserLoading 
+                            ? "bg-gray-700/50 text-gray-400 cursor-not-allowed" 
+                            : "bg-cyan-600/80 hover:bg-cyan-500 text-white shadow-[0_0_10px_rgba(56,189,248,0.4)] hover:shadow-[0_0_20px_rgba(56,189,248,0.8)]"
                         }`}
                         onClick={() => sendRequestMutation(user._id)}
                         disabled={hasRequestBeenSent || isUserLoading}

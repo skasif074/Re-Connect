@@ -10,7 +10,6 @@ import {
   LoaderIcon,
 } from 'lucide-react';
 import { completeOnboarding } from '../lib/api.js'; 
-import { LANGUAGES } from '../constants/index.js';
 
 const ProfileEditPage = () => {
   const { authUser } = useAuthUser();
@@ -19,8 +18,8 @@ const ProfileEditPage = () => {
   const [formState, setFormState] = useState({
     fullName: authUser?.fullName || "",
     bio: authUser?.bio || "",
-    nativeLanguage: authUser?.nativeLanguage || "",
-    learningLanguage: authUser?.learningLanguage || "",
+    nativeLanguage: authUser?.nativeLanguage || "english",
+    learningLanguage: authUser?.learningLanguage || "english",
     location: authUser?.location || "",
     profile: authUser?.profile || ""
   });
@@ -46,10 +45,15 @@ const ProfileEditPage = () => {
   };
 
   const handleRandomAvatar = () => {
-    const idx = Math.floor(Math.random() * 100) + 1;
-    const randomAvatar = `https://avatar.iran.liara.run/public/${idx}.png`;
-    setFormState({ ...formState, profile: randomAvatar });
-    toast.success("Random Profile Picture Generated!");
+    const seed = crypto.randomUUID();
+    const randomAvatar = `https://api.dicebear.com/9.x/adventurer/svg?seed=${seed}`;
+    
+    setFormState((prev) => ({
+      ...prev,
+      profile: randomAvatar,
+    }));
+    
+    toast.success("Profile-Pic Generation Successful");
   };
 
   return (
@@ -115,53 +119,8 @@ const ProfileEditPage = () => {
                   setFormState({ ...formState, bio: e.target.value })
                 }
                 className='textarea textarea-bordered h-24'
-                placeholder='Tell others about yourself and your language learning goals'
+                placeholder='Tell others about yourself'
               />
-            </div>
-
-            {/* Languages */}
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-              <div className='form-control'>
-                <label className='label'>
-                  <span className='label-text'>Native Language</span>
-                </label>
-                <select
-                  name='nativeLanguage'
-                  value={formState.nativeLanguage}
-                  onChange={(e) =>
-                    setFormState({ ...formState, nativeLanguage: e.target.value })
-                  }
-                  className='select select-bordered w-full'
-                >
-                  <option value=''>Select your native language</option>
-                  {LANGUAGES.map((lang) => (
-                    <option key={`native-${lang}`} value={lang.toLowerCase()}>
-                      {lang}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className='form-control'>
-                <label className='label'>
-                  <span className='label-text'>Learning Language</span>
-                </label>
-                <select
-                  name='learningLanguage'
-                  value={formState.learningLanguage}
-                  onChange={(e) =>
-                    setFormState({ ...formState, learningLanguage: e.target.value })
-                  }
-                  className='select select-bordered w-full'
-                >
-                  <option value=''>Select language you're learning</option>
-                  {LANGUAGES.map((lang) => (
-                    <option key={`learning-${lang}`} value={lang.toLowerCase()}>
-                      {lang}
-                    </option>
-                  ))}
-                </select>
-              </div>
             </div>
 
             {/* Location */}
